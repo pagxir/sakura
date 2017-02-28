@@ -8,6 +8,7 @@ ADD sources.list /etc/apt/sources.list
 
 RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y socat vim wget tmux openssh-server git g++ build-essential
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y openssh-server pwgen netcat ssh curl net-tools
 RUN apt-get autoremove
 RUN apt-get clean
 
