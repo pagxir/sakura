@@ -1,14 +1,13 @@
-FROM debian:latest
+FROM ubuntu:14.10
 MAINTAINER Guoxing Pei <pagxir@gmail.com>
 
 WORKDIR /root
 ADD set_root_pw.sh /root
 ADD run_pre_hook.sh /root
-ADD sources.list /etc/apt/sources.list
 
 RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y socat vim wget tmux openssh-server git g++ build-essential
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y openssh-server pwgen netcat ssh curl net-tools
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y pwgen netcat curl net-tools
 RUN apt-get autoremove
 RUN apt-get clean
 

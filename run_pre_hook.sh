@@ -26,4 +26,8 @@ if [ "${AUTHORIZED_KEYS}" != "**None**" ]; then
     done
 fi
 
+if [ "$PRE_HOOK_URL" != "**None**" ]; then
+    wget $PRE_HOOK_URL;
+fi;
+
 exec /usr/sbin/sshd -D
