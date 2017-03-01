@@ -5,7 +5,7 @@ WORKDIR /root
 ADD set_root_pw.sh /root
 ADD run_pre_hook.sh /root
 
-RUN apt-get update
+RUN apt-get -y update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y socat vim wget tmux openssh-server git g++ build-essential
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y pwgen netcat curl net-tools
 RUN apt-get autoremove
