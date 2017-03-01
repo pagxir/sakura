@@ -2,7 +2,7 @@
 
 echo "========================================================================"
 echo ""
-echo " server: $PRE_HOOK_URL $AUTHORIZED_KEYS
+echo server: $PRE_HOOK_URL $AUTHORIZED_KEYS
 echo ""
 echo " Please remember the password!"
 echo "========================================================================"
@@ -26,8 +26,11 @@ if [ "${AUTHORIZED_KEYS}" != "**None**" ]; then
     done
 fi
 
-if [ "$PRE_HOOK_URL" != "**None**" ]; then
-    wget $PRE_HOOK_URL;
+if echo ${PRE_HOOK_URL} | grep http; then
+    wget -O self_pre_hook.sh $PRE_HOOK_URL;
+    chmod +x self_pre_hook.sh;
+    ./self_pre_hook.sh;
 fi;
 
 exec /usr/sbin/sshd -D
+
