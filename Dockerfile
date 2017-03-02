@@ -14,7 +14,7 @@ RUN sed -ri 's/^PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config 
 
 RUN mkdir -p /var/run/sshd
 	
-EXPOSE 22
+EXPOSE 80
 
 RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y socat vim wget tmux openssh-server git g++ build-essential
@@ -37,6 +37,7 @@ ENV TZ "Asia/Shanghai"
 ENV TERM xterm
 ENV HOME /root
 
+EXPOSE 22
 EXPOSE 8000/udp
 EXPOSE 60001/udp
 
