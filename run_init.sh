@@ -40,7 +40,7 @@ build_ssh_keys
 AUTHORIZED_KEYS=**None**
 
 if echo ${DOCKER_HOOK_URL} | grep http; then
-    wget -O docke_hook.rc $DOCKER_HOOK_URL;
+    wget -O docker_hook.rc $DOCKER_HOOK_URL;
     . docker_hook.rc
 fi;
 
