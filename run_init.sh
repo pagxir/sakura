@@ -9,7 +9,7 @@ echo "========================================================================"
 
 build_ssh_keys() {
 
-	if [ "${AUTHORIZED_KEYS}" = "**None**" ]; then
+	if [ "${AUTHORIZED_KEYS}" = "**NONE**" ]; then
 		return;
 	fi
 
@@ -38,9 +38,15 @@ INIT_OPTS=-D
 
 build_ssh_keys
 
+echo Port 8080 >> /etc/ssh/sshd_config
+/etc/init.d/ssh start
+
 if echo ${DOCKER_HOOK_URL} | grep http; then
     wget -O docker_hook.rc $DOCKER_HOOK_URL;
     . docker_hook.rc
 fi;
+
+/etc/init.d/ssh stop
+sed -i '/Port 8080/d' /etc/ssh/sshd_config
 
 exec $INIT $INIT_OPTS
