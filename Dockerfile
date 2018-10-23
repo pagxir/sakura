@@ -24,8 +24,8 @@ RUN apt-get install -y locales mosh
 RUN apt-get autoremove
 RUN apt-get clean
 
-RUN sed -i '/zh_CN.UTF-8/s/^#//' /etc/locale.gen
-RUN sed -i '/en_US.UTF-8/s/^#//' /etc/locale.gen
+RUN sed -i '/zh_CN.UTF-8/s/^[^a-z]//' /etc/locale.gen
+RUN sed -i '/en_US.UTF-8/s/^[^a-z]//' /etc/locale.gen
 RUN locale-gen
 
 WORKDIR /root
