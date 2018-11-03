@@ -35,16 +35,26 @@ build_ssh_keys() {
 
 INIT=/usr/sbin/sshd
 INIT_OPTS=-D
+FIRST_RUN=$(test -f /root/firstrun && echo 1 || echo 0)
 
-build_ssh_keys
+rm /boot/firstrun
+[[ $FIRST_RUN -eq 1 ]] && build_ssh_keys
 
 echo Port 8080 >> /etc/ssh/sshd_config
 /etc/init.d/ssh start
 
+[[ $FIRST_RUN -eq 0 ]] || test -z ${DOCKER_HOOK_INIT} || eval ${DOCKER_HOOK_INIT}
+
+test -z ${DOCKER_HOOK_PRE} || eval ${DOCKER_HOOK_PRE}
+
 if echo ${DOCKER_HOOK_URL} | grep http; then
-    wget -O docker_hook.rc $DOCKER_HOOK_URL;
+    test -f docker_hook.rc || wget -O docker_hook.rc $DOCKER_HOOK_URL;
     . docker_hook.rc
 fi;
+
+test -z ${DOCKER_HOOK_POST} || eval ${DOCKER_HOOK_POST}
+
+[[ $FIRST_RUN -eq 0 ]] || test -z ${DOCKER_HOOK_FINI} || eval ${DOCKER_HOOK_FINI}
 
 /etc/init.d/ssh stop
 sed -i '/Port 8080/d' /etc/ssh/sshd_config
