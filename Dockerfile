@@ -13,6 +13,9 @@ RUN apt-get clean
 RUN sed -ri 's/^PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config && \
 	sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
 
+RUN grep '^PermitRootLogin yes' /etc/ssh/sshd_config || \
+	sed -ri '$s/$/\nPermitRootLogin yes/' /etc/ssh/sshd_config
+
 RUN mkdir -p /var/run/sshd
 	
 RUN sed -i '/zh_CN.UTF-8/s/^[^a-z]//' /etc/locale.gen

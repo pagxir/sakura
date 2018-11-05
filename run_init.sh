@@ -8,6 +8,7 @@ echo " Please remember the password!"
 echo "========================================================================"
 
 build_ssh_keys() {
+	./set_root_pw.sh
 
 	if [ "${AUTHORIZED_KEYS}" = "**NONE**" ]; then
 		return;
@@ -35,26 +36,28 @@ build_ssh_keys() {
 
 INIT=/usr/sbin/sshd
 INIT_OPTS=-D
-FIRST_RUN=$(test -f /root/firstrun && echo 1 || echo 0)
+FIRST_RUN=0
 
-rm /boot/firstrun
+[[ -f /root/firstrun ]] && FIRST_RUN=1
+rm /root/firstrun
+
 [[ $FIRST_RUN -eq 1 ]] && build_ssh_keys
 
 echo Port 8080 >> /etc/ssh/sshd_config
 /etc/init.d/ssh start
 
-[[ $FIRST_RUN -eq 0 ]] || test -z ${DOCKER_HOOK_INIT} || eval ${DOCKER_HOOK_INIT}
+[[ $FIRST_RUN -eq 1 && -n ${DOCKER_HOOK_INIT} ]] && eval ${DOCKER_HOOK_INIT}
 
-test -z ${DOCKER_HOOK_PRE} || eval ${DOCKER_HOOK_PRE}
+eval ${DOCKER_HOOK_PRE}
 
-if echo ${DOCKER_HOOK_URL} | grep http; then
-    test -f docker_hook.rc || wget -O docker_hook.rc $DOCKER_HOOK_URL;
+if [[ ${DOCKER_HOOK_URL} == http*://* ]] ; then
+    [[ -f docker_hook.rc ]] || wget -O docker_hook.rc $DOCKER_HOOK_URL;
     . docker_hook.rc
 fi;
 
-test -z ${DOCKER_HOOK_POST} || eval ${DOCKER_HOOK_POST}
+eval ${DOCKER_HOOK_POST}
 
-[[ $FIRST_RUN -eq 0 ]] || test -z ${DOCKER_HOOK_FINI} || eval ${DOCKER_HOOK_FINI}
+[[ $FIRST_RUN -eq 1 && -n ${DOCKER_HOOK_FINI} ]] && eval ${DOCKER_HOOK_FINI}
 
 /etc/init.d/ssh stop
 sed -i '/Port 8080/d' /etc/ssh/sshd_config
